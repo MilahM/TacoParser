@@ -19,6 +19,8 @@ namespace LoggingKata
 
             // use File.ReadAllLines(path) to grab all the lines from your csv file
             // Log and error if you get 0 lines and a warning if you get 1 line
+            logger.LogError("Error: 0 lines grabbed from csv file.", null);
+
             var lines = File.ReadAllLines(csvPath);
 
             logger.LogInfo($"Lines: {lines[0]}");
@@ -39,12 +41,39 @@ namespace LoggingKata
 
             ITrackable location2 = null;
 
-            double distance;
+            double distance = 0;
 
             // Include the Geolocation toolbox, so you can compare locations: `using GeoCoordinatePortable;`
 
             //HINT NESTED LOOPS SECTION---------------------
             // Do a loop for your locations to grab each location as the origin (perhaps: `locA`)
+
+            for (int i = 0; i < locations.Length; i++)
+            {
+                var locA = locations[i];
+
+                var corA = new GeoCoordinate();
+                corA.Latitude = locA.Location.Latitude;
+                corA.Longitude = locA.Location.Longitude;
+
+                for (int j = 0; j < locations.Length; j++)
+                {
+                    var locB = locations[j];
+
+                    var corB = new GeoCoordinate();
+                    corB.Latitude = locB.Location.Latitude;
+                    corB.Longitude = locB.Location.Longitude;
+
+                    if(corA.GetDistanceTo(corB) > distance)
+                    {
+                        distance = corA.GetDistanceTo(corB);
+                        location1= locA;
+                        location2= locB;
+                    }
+                }
+
+            }
+            Console.WriteLine($"{location1.Name} and {location2.Name} are the furthest apart.");
 
             // Create a new corA Coordinate with your locA's lat and long
 
